@@ -6,26 +6,24 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('inscripcions', function (Blueprint $table) {
+        Schema::create('enrollments', function (Blueprint $table) {
             $table->id();
+
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('fecha_inscripcion', 100)->nullable();
+            $table->foreignId('course_id')->constrained('courses')->onDelete('cascade');
+
+            $table->timestamp('enrolled_at');
             $table->timestamps();
 
+            // Evitar duplicados: un usuario no se puede inscribir dos veces en el mismo curso
+            $table->unique(['user_id', 'course_id']);
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('inscripcions');
+        Schema::dropIfExists('enrollments');
     }
-
 };
