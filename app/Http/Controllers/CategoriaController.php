@@ -7,89 +7,67 @@ use Illuminate\Http\Request;
 
 class CategoriaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // Lista todas las categorías
     public function index()
     {
-        $categorias = Categoria::all();
-        return response()->json($categorias);
+        return response()->json(Categoria::all(), 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(Request $request)
-    {
-
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Crea una nueva categoría
     public function store(Request $request)
     {
         $request->validate([
-            'nombre' => 'required|string|max:100|unique:categorias',
-            'descripcion' => 'nullable|string|max:255',
+            'name' => 'required|string|max:100',
+            'description' => 'nullable|string',
         ]);
 
-        $categoria = new Categoria();
-        $categoria->nombre = $request->input('nombre');
-        $categoria->descripcion = $request->input('descripcion');
-        $categoria->save();
+        $category = Categoria::create($request->all());
 
-        return response()->json(['message' => 'Categoria created successfully', 'categoria' => $categoria], 201);
+        return response()->json($category, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(int $id)
+    // Muestra una categoría específica
+    public function show($id)
     {
-        $categoria = Categoria::find($id);
-        if (!$categoria) {
-            return response()->json(['message' => 'Categoria not found'], 404);
+        $category = Categoria::find($id);
+
+        if (!$category) {
+            return response()->json(['message' => 'Categoría no encontrada'], 404);
         }
-        return response()->json($categoria);
+
+        return response()->json($category, 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Categoria $categoria)
+    // Actualiza una categoría
+    public function update(Request $request, $id)
     {
-        //
-    }
+        $category = Categoria::find($id);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Categoria $categoria)
-    {
+        if (!$category) {
+            return response()->json(['message' => 'Categoría no encontrada'], 404);
+        }
+
         $request->validate([
-            'nombre' => 'required|string|max:100|unique:categorias,nombre,' . $categoria->id,
-            'descripcion' => 'nullable|string|max:255',
+            'name' => 'required|string|max:100',
+            'description' => 'nullable|string',
         ]);
 
-        $categoria->nombre = $request->input('nombre');
-        $categoria->descripcion = $request->input('descripcion');
-        $categoria->save();
+        $category->update($request->all());
 
-        return response()->json(['message' => 'Categoria updated successfully', 'categoria' => $categoria]);
+        return response()->json($category, 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(int $id)
+    // Elimina una categoría
+    public function destroy($id)
     {
-        $categoria = Categoria::find($id);
-        if (!$categoria) {
-            return response()->json(['message' => 'Categoria not found'], 404);
+        $category = Categoria::find($id);
+
+        if (!$category) {
+            return response()->json(['message' => 'Categoría no encontrada'], 404);
         }
 
-        $categoria->delete();
-        return response()->json(['message' => 'Categoria deleted successfully']);
+        $category->delete();
+
+        return response()->json(['message' => 'Categoría eliminada'], 200);
     }
 }

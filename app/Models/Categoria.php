@@ -26,7 +26,7 @@ class Categoria extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'nombre',
+        'name',
         'descripcion',
     ];
 
@@ -35,6 +35,6 @@ class Categoria extends Model
      */
     public function cursos()
     {
-        return $this->hasMany(Curso::class, 'categoria_id');
+        return $this->hasMany(Curso::class, 'category_id');
     }
 }
